@@ -22,6 +22,7 @@ java -jar target/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar -—spring.cloud.strea
 ## Quick Start
 
 ### Download and Build
+You can skip this step if you use the jar I uploaded.
 
 ```
 git clone https://github.com/komushi/spring-cloud-stream-processor-flat2tuple.git
@@ -38,11 +39,11 @@ rabbitmq-server
 ### Download the Spring Cloud Data Flow Server and Shell apps
 
 ```
-wget http://repo.spring.io/snapshot/org/springframework/cloud/spring-cloud-dataflow-server-cloudfoundry/1.0.0.BUILD-SNAPSHOT/spring-cloud-dataflow-server-cloudfoundry-1.0.0.BUILD-SNAPSHOT.jar
+wget http://repo.spring.io/snapshot/org/springframework/cloud/spring-cloud-dataflow-server-local/1.0.0.BUILD-SNAPSHOT/spring-cloud-dataflow-server-local-1.0.0.BUILD-SNAPSHOT.jar
 wget http://repo.spring.io/snapshot/org/springframework/cloud/spring-cloud-dataflow-shell/1.0.0.BUILD-SNAPSHOT/spring-cloud-dataflow-shell-1.0.0.BUILD-SNAPSHOT.jar
 ```
 
-### Start Dataflow Server Local
+### Start Dataflow Server Local using RabbitMQ
 
 ```
 java -jar spring-cloud-dataflow-server-local-1.0.0.BUILD-SNAPSHOT.jar --binder=rabbit
@@ -56,9 +57,15 @@ java -jar spring-cloud-dataflow-shell-1.0.0.BUILD-SNAPSHOT.jar
 
 ### Register a custom app - flat2tuple in Dataflow Shell
 
+Use the built jar
 ```
-app register --name flat2tuple --type processor --uri http://<public_file_location>/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
 app register --name flat2tuple --type processor --uri file://<local_file_location>/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
+```
+
+Or use the uploaded jar
+
+```
+app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
 ```
 
 ### Start a stream in Dataflow Shell
@@ -156,9 +163,67 @@ Successfully registered application 'source:http'
 dataflow:>app register --name log --type sink --uri maven://org.springframework.cloud.stream.app:log-sink-rabbit:1.0.0.BUILD-SNAPSHOT
 Successfully registered application 'sink:log'
 
-dataflow:>app register --name flat2tuple --type processor --uri http://ks3001165.kimsufi.com/webui-aria2/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
+dataflow:>app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
 Successfully registered application 'processor:flat2tuple'
+
+dataflow:>app list
+╔══════╤══════════╤════╤════╗
+║source│processor │sink│task║
+╠══════╪══════════╪════╪════╣
+║http  │flat2tuple│log │    ║
+╚══════╧══════════╧════╧════╝
 ```
 
+### Create a stream
 
+It takes a little time for all the 3 Spring Boot Applications to start.
 
+```
+dataflow:>stream create --name http2tuple2log --definition "http | flat2tuple | log" --deploy
+Created and deployed new stream 'http2tuple2log'
+
+dataflow:>stream list
+╔══════════════╤═══════════════════════╤══════════╗
+║ Stream Name  │   Stream Definition   │  Status  ║
+╠══════════════╪═══════════════════════╪══════════╣
+║http2tuple2log│http | flat2tuple | log│undeployed║
+╚══════════════╧═══════════════════════╧══════════╝
+
+dataflow:>stream list
+╔══════════════╤═══════════════════════╤════════╗
+║ Stream Name  │   Stream Definition   │ Status ║
+╠══════════════╪═══════════════════════╪════════╣
+║http2tuple2log│http | flat2tuple | log│deployed║
+╚══════════════╧═══════════════════════╧════════╝
+```
+
+### Start to monitor the log sink app
+
+```
+cf apps
+Getting apps ...
+OK
+
+name                        requested state   instances   memory   disk   urls
+...
+...
+http2tuple2log-flat2tuple   started           1/1         1G       1G     http2tuple2log-flat2tuple.cfapps.io
+http2tuple2log-http         started           1/1         1G       1G     http2tuple2log-http.cfapps.io
+http2tuple2log-log          started           1/1         1G       1G     http2tuple2log-log.cfapps.io
+
+cf logs http2tuple2log-log
+Connected, tailing logs for app http2tuple2log-log ...
+```
+
+### Send some data to the source app
+```
+dataflow:>http post --target http://http2tuple2log-http.cfapps.io/  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.855383,40.779728,-73.967758,40.760326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
+> POST (text/plain;Charset=UTF-8) http://http2tuple2log-http.cfapps.io/ 468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.855383,40.779728,-73.967758,40.760326,CSH,6.50,0.50,0.50,0.00,0.00,7.50
+> 202 ACCEPTED
+```
+
+### The tailing log output
+```
+2016-06-16T05:47:33.35+0900 [APP/0]      OUT 2016-06-15 20:47:33.352  INFO 31 --- [ttp2tuple2log-1] o.s.i.codec.kryo.CompositeKryoRegistrar  : registering [40, java.io.File] with serializer org.springframework.integration.codec.kryo.FileSerializer
+2016-06-16T05:47:33.40+0900 [APP/0]      OUT 2016-06-15 20:47:33.406  INFO 31 --- [ttp2tuple2log-1] log.sink                                 : {"pickupLatitude":40.760326,"pickupLongitude":-73.967758,"dropoffLatitude":40.779728,"dropoffLongitude":-73.855383,"pickupDatetime":"2013-01-01 00:00:00","dropoffDatetime":"2013-01-01 00:04:00","route":"C161.160_C180.155","newid":{"route":"C161.160_C180.155"}}
+```
