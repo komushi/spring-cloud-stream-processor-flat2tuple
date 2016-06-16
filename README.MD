@@ -129,14 +129,17 @@ You must use a unique name for your app; an app with the same name in the same o
 cf push <dataflow_server_name> --no-start -p spring-cloud-dataflow-server-cloudfoundry-1.0.0.BUILD-SNAPSHOT.jar
 cf bind-service <dataflow_server_name> redis-dataflow
 cf bind-service <dataflow_server_name> rabbit-dataflow
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_URL https://api.run.pivotal.io
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_ORG <org>
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SPACE <space>
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_DOMAIN cfapps.io
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SERVICES redis,rabbit
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_USERNAME <email>
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_PASSWORD <password>
-cf set-env dataflow-server SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SKIP_SSL_VALIDATION true
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_URL https://api.run.pivotal.io
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_ORG <org>
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SPACE <space>
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_DOMAIN cfapps.io
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SERVICES redis,rabbit
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_USERNAME <email>
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_PASSWORD <password>
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SKIP_SSL_VALIDATION true
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_MEMORY 512
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_DISK 512
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_INSTANCES 1
 cf start <dataflow_server_name>
 ```
 
