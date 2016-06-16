@@ -16,6 +16,9 @@ import org.springframework.tuple.TupleBuilder;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
+import java.util.Calendar;
+import java.util.UUID;
+
 /**
  * Created by lei_xu on 6/11/16.
  */
@@ -72,21 +75,19 @@ public class Flat2TupleProcessorConfiguration {
 
         if (route != null)
         {
-            Tuple subTuple = TupleBuilder.tuple()
-                    .put("route", route)
-                    .build();
 
-            tuple = TupleBuilder.tuple().put("pickupLatitude", pickupLatitude)
+            tuple = TupleBuilder.tuple()
+                    .put("uuid", UUID.randomUUID())
+                    .put("route", route)
+                    .put("timestamp", Calendar.getInstance().getTimeInMillis())
+                    .put("pickupLatitude", pickupLatitude)
                     .put("pickupLongitude", pickupLongitude)
                     .put("dropoffLatitude", dropoffLatitude)
                     .put("dropoffLongitude", dropoffLongitude)
                     .put("pickupDatetime", pickupDatetime)
                     .put("dropoffDatetime", dropoffDatetime)
-                    .put("route", route)
-                    .put("newid", subTuple)
                     .build();
 
-            System.out.println("tuple hash:" + tuple.hashCode());
 
         }
 
