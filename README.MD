@@ -180,18 +180,18 @@ dataflow:>stream create --name http2tuple2log --definition "http | flat2tuple --
 Created and deployed new stream 'http2tuple2log'
 
 dataflow:>stream list
-╔══════════════╤═══════════════════════╤══════════╗
-║ Stream Name  │   Stream Definition   │  Status  ║
-╠══════════════╪═══════════════════════╪══════════╣
-║http2tuple2log│http | flat2tuple | log│undeployed║
-╚══════════════╧═══════════════════════╧══════════╝
+╔══════════════╤═════════════════════════════════════════════════════╤══════════╗
+║ Stream Name  │                  Stream Definition                  │  Status  ║
+╠══════════════╪═════════════════════════════════════════════════════╪══════════╣
+║http2tuple2log│http | flat2tuple --outputType=application/json | log│undeployed║
+╚══════════════╧═════════════════════════════════════════════════════╧══════════╝
 
 dataflow:>stream list
-╔══════════════╤═══════════════════════╤════════╗
-║ Stream Name  │   Stream Definition   │ Status ║
-╠══════════════╪═══════════════════════╪════════╣
-║http2tuple2log│http | flat2tuple | log│deployed║
-╚══════════════╧═══════════════════════╧════════╝
+╔══════════════╤═════════════════════════════════════════════════════╤════════╗
+║ Stream Name  │                  Stream Definition                  │ Status ║
+╠══════════════╪═════════════════════════════════════════════════════╪════════╣
+║http2tuple2log│http | flat2tuple --outputType=application/json | log│deployed║
+╚══════════════╧═════════════════════════════════════════════════════╧════════╝
 ```
 
 ### Start to monitor the log sink app
@@ -204,9 +204,9 @@ OK
 name                        requested state   instances   memory   disk   urls
 ...
 ...
-http2tuple2log-flat2tuple   started           1/1         1G       1G     http2tuple2log-flat2tuple.cfapps.io
-http2tuple2log-http         started           1/1         1G       1G     http2tuple2log-http.cfapps.io
-http2tuple2log-log          started           1/1         1G       1G     http2tuple2log-log.cfapps.io
+http2tuple2log-flat2tuple   started           1/1         512M     512M   http2tuple2log-flat2tuple.cfapps.io
+http2tuple2log-http         started           1/1         512M     512M   http2tuple2log-http.cfapps.io
+http2tuple2log-log          started           1/1         512M     512M   http2tuple2log-log.cfapps.io
 
 cf logs http2tuple2log-log
 Connected, tailing logs for app http2tuple2log-log ...
@@ -215,14 +215,12 @@ Connected, tailing logs for app http2tuple2log-log ...
 ### Send some data to the source app
 ```
 dataflow:>http post --target http://http2tuple2log-http.cfapps.io/  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.855383,40.779728,-73.967758,40.760326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
-> POST (text/plain;Charset=UTF-8) http://http2tuple2log-http.cfapps.io/ 468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.855383,40.779728,-73.967758,40.760326,CSH,6.50,0.50,0.50,0.00,0.00,7.50
-> 202 ACCEPTED
+
 ```
 
 ### The tailing log output
 ```
-2016-06-16T05:47:33.35+0900 [APP/0]      OUT 2016-06-15 20:47:33.352  INFO 31 --- [ttp2tuple2log-1] o.s.i.codec.kryo.CompositeKryoRegistrar  : registering [40, java.io.File] with serializer org.springframework.integration.codec.kryo.FileSerializer
-2016-06-16T05:47:33.40+0900 [APP/0]      OUT 2016-06-15 20:47:33.406  INFO 31 --- [ttp2tuple2log-1] log.sink                                 : {"pickupLatitude":40.760326,"pickupLongitude":-73.967758,"dropoffLatitude":40.779728,"dropoffLongitude":-73.855383,"pickupDatetime":"2013-01-01 00:00:00","dropoffDatetime":"2013-01-01 00:04:00","route":"C161.160_C180.155","newid":{"route":"C161.160_C180.155"}}
+2016-06-17T03:35:21.93+0900 [APP/0]      OUT 2016-06-16 18:35:21.931  INFO 19 --- [ttp2tuple2log-1] log.sink                                 : {"pickupLatitude":40.760326,"pickupLongitude":-73.967758,"dropoffLatitude":40.779728,"dropoffLongitude":-73.855383,"pickupDatetime":"2013-01-01 00:00:00","dropoffDatetime":"2013-01-01 00:04:00","route":"C161.160_C180.155","newid":{"route":"C161.160_C180.155"}}
 ```
 
 # 3. Run with Gemfire Sink
@@ -243,15 +241,16 @@ dataflow:>http post --target http://localhost:9000  --data "468244D1361B8A3EB8D2
 gfsh
 ```
 gfsh>query --query="select * from /RegionRaw"
+
 Result     : true
 startCount : 0
 endCount   : 20
 Rows       : 2
 
- hashCode  |       route       | pickupLatitude | pickupLongitude | dropoffLatitude | dropoffLongitude |   pickupDatetime    |   dropoffDatetime   | newid
----------- | ----------------- | -------------- | --------------- | --------------- | ---------------- | ------------------- | ------------------- | -------------------------------------------------------
-568028465  | C159.162_C180.157 | 40.750326      | -73.978758      | 40.769728       | -73.856383       | 2013-01-01 00:00:00 | 2013-01-01 00:04:00 | class com.gemstone.gemfire.pdx.internal.PdxInstanceImpl
-1825081978 | C161.162_C180.157 | 40.750326      | -73.968758      | 40.769728       | -73.856383       | 2013-01-01 00:00:00 | 2013-01-01 00:04:00 | class com.gemstone.gemfire.pdx.internal.PdxInstanceImpl
+                uuid                 |       route       |   timestamp   | pickupLatitude | pickupLongitude | dropoffLatitude | dropoffLongitude |   pickupDatetime    | dropoffDatetime
+------------------------------------ | ----------------- | ------------- | -------------- | --------------- | --------------- | ---------------- | ------------------- | -------------------
+488fb515-0bba-448b-b590-fce23cc00699 | C161.162_C180.159 | 1466102556782 | 40.750326      | -73.969758      | 40.760728       | -73.857383       | 2013-01-01 00:00:00 | 2013-01-01 00:04:00
+026d8de7-22a1-46c6-89b4-58aacf5b6392 | C161.162_C180.157 | 1466102536059 | 40.750326      | -73.968758      | 40.769728       | -73.856383       | 2013-01-01 00:00:00 | 2013-01-01 00:04:00
 
 NEXT_STEP_NAME : END
 ```
