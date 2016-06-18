@@ -225,16 +225,25 @@ dataflow:>http post --target http://http2tuple2log-http.cfapps.io/  --data "4682
 
 # 3. Run with Gemfire Sink
 dataflow shell
+
 ```
-dataflow:>app register --name flat2tuple --type processor --uri file:///Users/lei_xu/Desktop/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
-Successfully registered application 'processor:flat2tuple'
+app register --name flat2tuple --type processor --uri file:///Users/lei_xu/Desktop/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
+```
+Or
+```
+app register --name flat2tuple --type processor --uri file:///Users/lei_xu/Desktop/Flat2TupleTransformer-0.0.1-SNAPSHOT_kafka.jar
+```
 
-dataflow:>stream create http2gem --definition "http --server.port=9000 | flat2tuple --outputType=application/json | gemfire --regionName=RegionRaw --json=true --keyExpression=payload.getField('uuid')" --deploy
-Created and deployed new stream 'http2gem'
+dataflow shell
+```
+stream create http2gem --definition "http --server.port=9000 | flat2tuple --outputType=application/json | gemfire --regionName=RegionRaw --json=true --keyExpression=payload.getField('uuid')" --deploy
 
-dataflow:>http post --target http://localhost:9000  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.856383,40.769728,-73.968758,40.750326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
 
-dataflow:>http post --target http://localhost:9000  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.857383,40.760728,-73.969758,40.750326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
+http post --target http://localhost:9000  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.856383,40.769728,-73.968758,40.750326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
+
+http post --target http://localhost:9000  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.857383,40.760728,-73.969758,40.750326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
+
+http post --target http://localhost:9000  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.867383,40.760728,-73.969758,40.750326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
 
 ```
 
