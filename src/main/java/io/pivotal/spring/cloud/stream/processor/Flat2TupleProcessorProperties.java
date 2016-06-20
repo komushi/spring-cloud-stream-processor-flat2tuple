@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Created by lei_xu on 6/11/16.
  */
-@ConfigurationProperties
+@ConfigurationProperties(prefix="flat")
 public class Flat2TupleProcessorProperties {
     // The cells for this query are squares of 500 m X 500 m
     private static final Double EDGE_LENGTH = new Double(500);

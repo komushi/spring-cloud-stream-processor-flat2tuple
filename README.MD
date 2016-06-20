@@ -51,15 +51,21 @@ java -jar spring-cloud-dataflow-shell-1.0.0.BUILD-SNAPSHOT.jar
 
 ### Register a custom app - flat2tuple in Dataflow Shell
 
-Use the built jar
+Use the built jar for kafka
 ```
-app register --name flat2tuple --type processor --uri file://<local_file_location>/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
+app register --name flat2tuple --type processor --uri file://<local_file_location>/Flat2TupleTransformer-0.0.1-SNAPSHOT_kafka.jar
+```
+
+Use the built jar for rabbit
+
+```
+app register --name flat2tuple --type processor --uri file://<local_file_location>/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
 ```
 
 Or use the uploaded jar
 
 ```
-app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
+app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
 ```
 
 ### Start a stream in Dataflow Shell
@@ -160,7 +166,7 @@ Successfully registered application 'source:http'
 dataflow:>app register --name log --type sink --uri maven://org.springframework.cloud.stream.app:log-sink-rabbit:1.0.0.BUILD-SNAPSHOT
 Successfully registered application 'sink:log'
 
-dataflow:>app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
+dataflow:>app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
 Successfully registered application 'processor:flat2tuple'
 
 dataflow:>app list
@@ -227,11 +233,11 @@ dataflow:>http post --target http://http2tuple2log-http.cfapps.io/  --data "4682
 dataflow shell
 
 ```
-app register --name flat2tuple --type processor --uri file:///Users/lei_xu/Desktop/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
+app register --name flat2tuple --type processor --uri file://<local_file_location>/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
 ```
 Or
 ```
-app register --name flat2tuple --type processor --uri file:///Users/lei_xu/Desktop/Flat2TupleTransformer-0.0.1-SNAPSHOT_kafka.jar
+app register --name flat2tuple --type processor --uri file://<local_file_location>/Flat2TupleTransformer-0.0.1-SNAPSHOT_kafka.jar
 ```
 
 dataflow shell
