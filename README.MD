@@ -133,11 +133,11 @@ cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_URL https:/
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_ORG <org>
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SPACE <space>
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_DOMAIN cfapps.io
-cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SERVICES redis,rabbit
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SERVICES redis-dataflow,rabbit-dataflow
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_USERNAME <email>
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_PASSWORD <password>
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_SKIP_SSL_VALIDATION true
-cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_MEMORY 512
+cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_MEMORY 600
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_DISK 512
 cf set-env <dataflow_server_name> SPRING_CLOUD_DEPLOYER_CLOUDFOUNDRY_INSTANCES 1
 cf start <dataflow_server_name>
@@ -151,10 +151,9 @@ java -jar spring-cloud-dataflow-shell-1.0.0.BUILD-SNAPSHOT.jar
 
 ### Connect to the Dataflow Server
 
+In dataflow shell
 ```
-server-unknown:>dataflow config server http://<dataflow_server_name>.cfapps.io
-Successfully targeted http://<dataflow_server_name>.cfapps.io
-dataflow:>
+dataflow config server http://<dataflow_server_name>.cfapps.io
 ```
 
 ### Register sink, source & processor
@@ -166,7 +165,7 @@ Successfully registered application 'source:http'
 dataflow:>app register --name log --type sink --uri maven://org.springframework.cloud.stream.app:log-sink-rabbit:1.0.0.BUILD-SNAPSHOT
 Successfully registered application 'sink:log'
 
-dataflow:>app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
+dataflow:>app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream/master/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
 Successfully registered application 'processor:flat2tuple'
 
 dataflow:>app list
