@@ -65,7 +65,7 @@ app register --name flat2tuple --type processor --uri file://<local_file_locatio
 Or use the uploaded jar
 
 ```
-app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream-processor-flat2tuple/master/tmp/Flat2TupleTransformer-0.0.1-SNAPSHOT_rabbit.jar
+app register --name flat2tuple --type processor --uri https://rawgit.com/komushi/spring-cloud-stream/master/Flat2TupleTransformer-0.0.1-SNAPSHOT.jar
 ```
 
 ### Start a stream in Dataflow Shell
