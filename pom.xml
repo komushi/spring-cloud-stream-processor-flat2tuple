@@ -3,58 +3,42 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>spring-boot-starter-parent</artifactId>
     <groupId>org.springframework.boot</groupId>
-    <version>1.4.0.BUILD-SNAPSHOT</version>
-    <relativePath></relativePath>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.3.5.RELEASE</version>
   </parent>
   <groupId>io.pivotal.spring.cloud.stream.processor</groupId>
-  <artifactId>Flat2TupleTransformer</artifactId>
+  <artifactId>spring-cloud-stream-processor-flat2tuple</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Flat2TupleTransformer</name>
+  <name>spring-cloud-stream-processor-flat2tuple</name>
   <description>Taxi Transaction Flat Message to Tuple Transformer</description>
+  <properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <build>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <version>0.14.2</version>
-        <configuration>
-          <images>
-            <image>
-              <name>${docker.image}</name>
-              <build>
-                <from>anapsix/alpine-java:8</from>
-                <volumes>
-                  <volume>/tmp</volume>
-                </volumes>
-                <entryPoint>
-                  <exec>
-                    <arg>java</arg>
-                    <arg>-jar</arg>
-                    <arg>/maven/demo.jar</arg>
-                  </exec>
-                </entryPoint>
-                <assembly>
-                  <descriptor>assembly.xml</descriptor>
-                </assembly>
-              </build>
-            </image>
-          </images>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <repositories>
     <repository>
-      <snapshots />
-      <id>spring-snapshots</id>
-      <name>Spring Snapshots</name>
+      <id>spring-snapshot</id>
+      <name>Spring Snapshot Maven Repository</name>
       <url>https://repo.spring.io/snapshot</url>
+    </repository>
+    <repository>
+      <id>spring-release</id>
+      <name>Spring release Maven Repository</name>
+      <url>https://repo.spring.io/release</url>
+    </repository>
+    <repository>
+      <id>spring-libs-release</id>
+      <name>Spring libs-release Maven Repository</name>
+      <url>https://repo.spring.io/libs-release</url>
     </repository>
     <repository>
       <snapshots>
@@ -65,38 +49,28 @@
       <url>https://repo.spring.io/milestone</url>
     </repository>
     <repository>
-        <id>nuiton-openmap</id>
-        <name>nuiton openmap</name>
-        <url>http://maven.nuiton.org/nexus/content/repositories/thirdparty</url>
+      <id>spring-libs-release-remote</id>
+      <name>Spring libs-release Maven Repository</name>
+      <url>http://repo.spring.io/libs-release-remote</url>
+    </repository>
+    <repository>
+      <id>nuiton-openmap</id>
+      <name>nuiton openmap</name>
+      <url>http://maven.nuiton.org/nexus/content/repositories/thirdparty</url>
     </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
-      <snapshots />
-      <id>spring-snapshots</id>
-      <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/snapshot</url>
+      <id>spring-plugins-release</id>
+      <name>Spring plugins-release Maven Repository</name>
+      <url>http://repo.spring.io/plugins-release</url>
     </pluginRepository>
+
     <pluginRepository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
       <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>https://repo.spring.io/milestone</url>
+      <url>http://repo.spring.io/milestone</url>
     </pluginRepository>
   </pluginRepositories>
-  <dependencyManagement>
-      <dependencies>
-          <dependency>
-              <groupId>org.springframework.cloud</groupId>
-              <artifactId>spring-cloud-stream-dependencies</artifactId>
-              <version>1.1.0.BUILD-SNAPSHOT</version>
-              <type>pom</type>
-              <scope>import</scope>
-          </dependency>
-      </dependencies>
-  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -111,16 +85,7 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
+      <version>1.0.2.RELEASE</version>
     </dependency>
     <dependency>
         <groupId>com.bbn</groupId>
@@ -128,9 +93,4 @@
         <version>5.1.13-1</version>
     </dependency>
   </dependencies>
-  <properties>
-    <docker.image>${project.artifactId}-app</docker.image>
-    <java.version>1.8</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 </project>
