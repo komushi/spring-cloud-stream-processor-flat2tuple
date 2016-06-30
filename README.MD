@@ -71,7 +71,7 @@ app register --name flat2tuple --type processor --uri https://rawgit.com/komushi
 ### Start a stream in Dataflow Shell
 
 ```
-stream create --name http2tuple2log --definition "http --server.port=9000 | flat2tuple --outputType=application/json | log" --deploy
+stream create --name http2tuple2log --definition "http --server.port=9000 | flat2tuple --spring.cloud.stream.bindings.output.contentType=application/json | log" --deploy
 ```
 
 ### Post a message
@@ -181,21 +181,21 @@ dataflow:>app list
 It takes a little time for all the 3 Spring Boot Applications to start.
 
 ```
-dataflow:>stream create --name http2tuple2log --definition "http | flat2tuple --outputType=application/json | log" --deploy
+dataflow:>stream create --name http2tuple2log --definition "http | flat2tuple --spring.cloud.stream.bindings.output.contentType=application/json | log" --deploy
 Created and deployed new stream 'http2tuple2log'
 
 dataflow:>stream list
 ╔══════════════╤═════════════════════════════════════════════════════╤══════════╗
 ║ Stream Name  │                  Stream Definition                  │  Status  ║
 ╠══════════════╪═════════════════════════════════════════════════════╪══════════╣
-║http2tuple2log│http | flat2tuple --outputType=application/json | log│undeployed║
+║http2tuple2log│http | flat2tuple                               | log│undeployed║
 ╚══════════════╧═════════════════════════════════════════════════════╧══════════╝
 
 dataflow:>stream list
 ╔══════════════╤═════════════════════════════════════════════════════╤════════╗
 ║ Stream Name  │                  Stream Definition                  │ Status ║
 ╠══════════════╪═════════════════════════════════════════════════════╪════════╣
-║http2tuple2log│http | flat2tuple --outputType=application/json | log│deployed║
+║http2tuple2log│http | flat2tuple                    			| log│deployed║
 ╚══════════════╧═════════════════════════════════════════════════════╧════════╝
 ```
 
@@ -241,7 +241,7 @@ app register --name flat2tuple --type processor --uri file://<local_file_locatio
 
 dataflow shell
 ```
-stream create http2gem --definition "http --server.port=9000 | flat2tuple --outputType=application/json | gemfire --regionName=RegionRaw --json=true --keyExpression=payload.getField('uuid')" --deploy
+stream create http2gem --definition "http --server.port=9000 | flat2tuple --spring.cloud.stream.bindings.output.contentType=application/json | gemfire --regionName=RegionRaw --json=true --keyExpression=payload.getField('uuid')" --deploy
 
 
 http post --target http://localhost:9000  --data "468244D1361B8A3EB8D206CC394BC9E9,BB899DFEA9CC964B50C540A1D685CCFB,2013-01-01 00:00:00,2013-01-01 00:04:00,240,1.71,-73.856383,40.769728,-73.968758,40.750326,CSH,6.50,0.50,0.50,0.00,0.00,7.50"
