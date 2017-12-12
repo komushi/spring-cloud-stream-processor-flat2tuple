@@ -1,0 +1,25 @@
+server:
+  port: 8082
+
+flat:
+  cells: 300
+  edge-length: 500
+
+spring:
+  cloud:
+    stream:
+      defaultBinder: kinesis
+      default:
+        contentType: application/json
+      bindings:
+        input:
+          destination: http2flat
+        output:
+          destination: tuple2log
+          producer: 
+            partitionKeyExpression: "2"
+
+cloud:  
+  aws:  
+    region:  
+      static: ap-northeast-1 

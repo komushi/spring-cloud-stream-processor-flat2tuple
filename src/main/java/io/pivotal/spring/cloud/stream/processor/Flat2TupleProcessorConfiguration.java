@@ -7,7 +7,9 @@ import org.springframework.cloud.stream.messaging.Processor;
 
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.transformer.MessageTransformationException;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+
 
 
 import org.springframework.tuple.Tuple;
@@ -18,6 +20,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 import java.util.Calendar;
 import java.util.UUID;
+import java.util.Arrays;
 
 /**
  * Created by lei_xu on 6/11/16.
@@ -30,7 +33,7 @@ public class Flat2TupleProcessorConfiguration {
     private Flat2TupleProcessorProperties properties;
 
     @Transformer(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
-    public Tuple transform(Message<?> message) {
+    public Message<Tuple> transform(Message<?> message) {
         Object payloadObj = message.getPayload();
         String payload = null;
 
@@ -52,7 +55,12 @@ public class Flat2TupleProcessorConfiguration {
 
         String[] tokens = payload.split(delims);
 
-        System.out.println("payload:" + payload);
+        System.out.println("**********************payload*********************");
+        System.out.println(payload);
+        System.out.println("**********************payload end*****************");
+        System.out.println("**********************tokens*********************");
+        System.out.println(Arrays.toString(tokens));
+        System.out.println("**********************tokens end*****************");
 
         double pickupLatitude = java.lang.Double.parseDouble(tokens[9]);
         double pickupLongitude = java.lang.Double.parseDouble(tokens[8]);
@@ -91,7 +99,9 @@ public class Flat2TupleProcessorConfiguration {
 
         }
 
-        return tuple;
+        Message<Tuple> rtnMessage = MessageBuilder.withPayload(tuple).build();
+        
+        return rtnMessage;
     }
 
 
