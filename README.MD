@@ -4,7 +4,7 @@ Data-MicroServices Application provided as Spring Cloud Dataflow Processor
 Migrated from xd-flat2json-processor:
 https://github.com/komushi/xd-flat2json-processor
 
-# 1. Local
+# Option 1. Local
 
 ## Prerequisites for local
 
@@ -83,7 +83,7 @@ http post --target http://localhost:9000  --data "468244D1361B8A3EB8D206CC394BC9
 ### Check the log sink stdout using tail -f
 
 
-# 2. Cloud Foundry
+# Option 2. Cloud Foundry
 
 ## Prerequisites for Cloud Foundry
 
@@ -268,3 +268,5 @@ Rows       : 2
 
 NEXT_STEP_NAME : END
 ```
+
+# Option 3. Kinesis Binder
